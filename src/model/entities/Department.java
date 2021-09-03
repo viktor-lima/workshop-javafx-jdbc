@@ -1,20 +1,20 @@
 package model.entities;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class Department implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	private Integer id;
 	private String name;
-		
+	
 	public Department() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public Department(Integer id, String name) {
+		super();
 		this.id = id;
 		this.name = name;
 	}
@@ -66,9 +66,5 @@ public class Department implements Serializable {
 	}
 	
 	
-	
-	
-	
-	
-	
+
 }
