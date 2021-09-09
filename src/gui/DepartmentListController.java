@@ -9,6 +9,7 @@ import application.Main;
 import gui.listeners.DataChangeListener;
 import gui.utils.Alerts;
 import gui.utils.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -33,10 +35,16 @@ public class DepartmentListController implements Initializable, DataChangeListen
 
 	@FXML
 	private TableView<Department> tableViewDepartment;
+
 	@FXML
 	private TableColumn<Department, Integer> tableColumnId;
+
 	@FXML
 	private TableColumn<Department, String> tableColumnName;
+
+	@FXML
+	private TableColumn<Department, Department> tableColumnEDIT;
+
 	@FXML
 	private Button btNew;
 
@@ -46,7 +54,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
 		Department obj = new Department();
-		CreateDialogForm(obj, "/gui/DepartmentForm.FXML", parentStage);
+		createDialogForm(obj, "/gui/DepartmentForm.FXML", parentStage);
 	}
 
 	@Override
@@ -74,9 +82,10 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		List<Department> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartment.setItems(obsList);
+		initEditButtons();
 	}
 
-	public void CreateDialogForm(Department obj, String absoluteName, Stage parentStage) {
+	public void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
@@ -103,6 +112,25 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	@Override
 	public void onDataChaged() {
 		updateTableView();
+	}
+
+	private void initEditButtons() {
+		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {
+			private final Button button = new Button("edit");
+
+			@Override
+			protected void updateItem(Department obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(
+						event -> createDialogForm(obj, "/gui/DepartmentForm.fxml", Utils.currentStage(event)));
+			}
+		});
 	}
 
 }
