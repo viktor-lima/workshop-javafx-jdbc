@@ -1,22 +1,22 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import com.mysql.cj.util.Util;
-
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.utils.Alerts;
 import gui.utils.Constraints;
 import gui.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
 import model.service.DepartmentService;
 
@@ -25,6 +25,8 @@ public class DepartmentFormController implements Initializable  {
 	private Department entity;
 	
 	private DepartmentService service;
+	
+	private List<DataChangeListener> dataChangeListener = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
@@ -44,6 +46,9 @@ public class DepartmentFormController implements Initializable  {
 	public void setDepartmentService(DepartmentService service) {
 		this.service = service;
 	}
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListener.add(listener);
+	}
 	
 	public void onBtSaveAction(ActionEvent event) {
 		if(entity == null) {
@@ -55,6 +60,7 @@ public class DepartmentFormController implements Initializable  {
 		try {
 			entity = getFormData();
 			service.saveOrUpdate(entity);	
+			notfyDataChangeListeners();
 			Utils.currentStage(event).close();
 		}
 		catch(DbException e	) {
@@ -62,6 +68,12 @@ public class DepartmentFormController implements Initializable  {
 		}
 		
 	}
+	private void notfyDataChangeListeners() {
+		for(DataChangeListener listener : dataChangeListener) {
+			listener.onDataChaged();
+		}
+	}
+
 	private Department getFormData() {
 		Department obj = new Department();
 		
