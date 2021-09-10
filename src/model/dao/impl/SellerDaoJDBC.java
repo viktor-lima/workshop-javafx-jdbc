@@ -13,6 +13,7 @@ import java.util.Map;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegrityException;
 import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
@@ -49,7 +50,7 @@ public class SellerDaoJDBC implements SellerDao {
 				DB.closeResultSet(rs);
 			}
 		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeStatement(st);
 		}
@@ -73,7 +74,7 @@ public class SellerDaoJDBC implements SellerDao {
 			st.executeUpdate();
 
 		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeStatement(st);
 		}
@@ -90,7 +91,7 @@ public class SellerDaoJDBC implements SellerDao {
 			st.executeUpdate();
 	
 		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeStatement(st);
 		}
@@ -172,7 +173,7 @@ public class SellerDaoJDBC implements SellerDao {
 			}
 			return list;
 		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeResultSet(rs);
 			DB.closeStatement(st);
@@ -209,7 +210,7 @@ public class SellerDaoJDBC implements SellerDao {
 			return list;
 
 		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeResultSet(rs);
 			DB.closeStatement(st);
